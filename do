@@ -10,7 +10,7 @@ function task_nginx() {
     ./start_nginx.bat
 }
 
-## nginx: Kill nginx
+## kill-nginx: Kill nginx
 function task_kill_nginx() {
     export MSYS_NO_PATHCONV=1
     # tasklist /fi "imagename eq nginx.exe"

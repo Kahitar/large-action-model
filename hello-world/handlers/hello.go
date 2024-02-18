@@ -17,12 +17,7 @@ import (
 // @Produce  json
 // @Success 200 {object} map[string]string
 // @Router /hello [post]
-func HelloHandler(w http.ResponseWriter, r *http.Request) {
-    if r.Method != "POST" {
-        http.Error(w, "Method is not supported.", http.StatusMethodNotAllowed)
-        return
-    }
-
+func HelloPostHandler(w http.ResponseWriter, r *http.Request) {
     greetings := []string{"Hello, world!", "Hi there!", "Greetings, traveler!", "Howdy, partner!"}
     randomIndex := rand.Intn(len(greetings))
 
@@ -38,3 +33,23 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(jsonResponse)
 }
 
+// helloHandler returns a random greeting message.
+// @Summary Return a random greeting
+// @Description get a random greeting message
+// @Tags hello
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} map[string]string
+// @Router /hello [post]
+func HelloGetHandler(w http.ResponseWriter, r *http.Request) {
+    response := map[string]string{"message": "Hello from GET!"}
+    jsonResponse, err := json.Marshal(response)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    w.Write(jsonResponse)
+}

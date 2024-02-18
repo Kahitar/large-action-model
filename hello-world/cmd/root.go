@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"net/http"
 	"hello/handlers"
+	"net/http"
+
+	"github.com/spf13/cobra"
 )
 
 // Define the port flag default value
@@ -16,13 +17,27 @@ var rootCmd = &cobra.Command{
 	Short: "Hello world for Large Action Model (LAM) tool",
 	Long:  `A longer description that spans multiple lines and likely contains examples and usage of using your application. For example: Cobra is a CLI library for Go that empowers applications.`,
 	// The code that will be executed when the root command runs
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Starting server on port %s\n", port)
-		http.HandleFunc("/hello", handlers.HelloHandler)
-		if err := http.ListenAndServe("127.0.0.1:"+port, nil); err != nil {
-			fmt.Println("Error starting server:", err)
-		}
-	},
+	Run: runCommand,
+}
+
+func runCommand(cmd *cobra.Command, args []string) {
+    fmt.Printf("Starting server on port %s\n", port)
+    mux := http.NewServeMux()
+
+    mux.HandleFunc("/hello/", helloHandler)
+
+    if err := http.ListenAndServe("127.0.0.1:" + port, mux); err != nil {
+        fmt.Println("Error starting server:", err)
+    }
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Printf("%s %s\n", r.Method, r.Host)
+    if r.Method == "GET" {
+        handlers.HelloGetHandler(w, r)
+    } else {
+        handlers.HelloPostHandler(w, r)
+    }
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
