@@ -1,11 +1,6 @@
-## ngrok: Start the ngrok tunnel
-function task_ngrok() {
-    ngrok http --domain=careful-broadly-kitten.ngrok-free.app 8080
-}
-
-## run (port=8080): Start the project using it's do script
+## run (port=9001): Start the project using it's do script
 function task_run() {
-    port=${1:-8080}
+    port=${1:-9001}
     go run main.go --port=$port
 }
 

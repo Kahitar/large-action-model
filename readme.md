@@ -25,6 +25,35 @@ Now run the API locally. For example for the hello world go app:
     $ cd hello-world
     $ go run main.go
 
+## NGINX Local Setup
+
+### Start nginx with local config file
+
+The command is:
+
+    $ nginx -c nginx.conf
+
+For this to work, all nginx config files need to be present and the `logs/` and `temp/` folders must exist (on windows at least).
+
+### List nginx processes
+
+    $ export MSYS_NO_PATHCONV=1
+    $ tasklist /fi "imagename eq nginx.exe"
+
+### Stop nginx
+
+Fast shutdown:
+
+    $ nginx -s stop 
+
+Gracefull shutdown:
+
+    $ nginx -s quit 
+
+Kill tasks:
+
+    $ export MSYS_NO_PATHCONV=1
+    $ taskkill /f /im nginx.exe
 
 ## OpenAPI 3.0
 

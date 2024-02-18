@@ -1,15 +1,36 @@
+## nginx: Start nginx
+function task_nginx() { 
+    cd nginx
+    
+    # Start nginx in the foreground
+    # nginx -c nginx.conf
+    # Or start it in the background
+    # winpty nginx -c nginx.conf &
+    # Or use a batch file
+    ./start_nginx.bat
+}
+
+## nginx: Kill nginx
+function task_kill_nginx() {
+    export MSYS_NO_PATHCONV=1
+    # tasklist /fi "imagename eq nginx.exe"
+    # nginx -s stop 
+    # nginx -s quit 
+    # export MSYS_NO_PATHCONV=1
+    taskkill /f /im nginx.exe
+}
+
 ## ngrok: Start the ngrok tunnel
 function task_ngrok() {
     ngrok http --domain=careful-broadly-kitten.ngrok-free.app 8080
 }
 
-## run [project-name] (port=8080): Start the project using it's do script
+## run [project-name]: Start the project using it's do script
 function task_run() {
     project=${1:-"hello-world"}
-    port=${2:-8080}
-    echo "Starting project '$project' on port '$port'"
+    echo "Starting project '$project'"
     cd $project
-    ./do run $port
+    ./do run
 }
 
 function task_usage {
