@@ -1,0 +1,51 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a sample server for a hello world API.",
+    "version": "1.0",
+    "title": "Hello World API",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "https://careful-broadly-kitten.ngrok-free.app"
+    }
+  ],
+  "paths": {
+    "/hello": {
+      "post": {
+        "tags": [
+          "hello"
+        ],
+        "summary": "Return a random greeting",
+        "description": "Get a random greeting message",
+        "operationId": "getRandomGreeting",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

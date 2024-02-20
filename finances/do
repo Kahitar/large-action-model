@@ -1,0 +1,43 @@
+## run (port=9001): Start the project using it's do script
+function task_run() {
+    port=${1:-9001}
+    go run main.go --port=$port
+}
+
+function task_usage {
+    echo "Usage: $0"
+    sed -n 's/^##//p' <"$0" | column -t -s ':' | sed -E $'s/^/\t/'
+}
+
+cmd=${1:-}
+shift || true
+resolved_command=$(echo "task_${cmd}" | sed 's/-/_/g')
+if [[ "$(LC_ALL=C type -t "${resolved_command}")" == "function" ]]; then
+    pushd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null
+    ${resolved_command} "$@"
+else
+    task_usage
+fi
+
+
+
+# ## add-firewall-rule: Add a firewall rule for main.exe in the same directory as the "do" script
+# function task_add_firewall_rule() {
+# # Get the directory of the "do" script
+#     script_dir=$(dirname "$(realpath "$BASH_SOURCE")")
+# # Specify the filename of the executable
+#         exe_name="main.exe"
+# # Combine them to form the full path, convert to Windows-style path, and escape backslashes
+#         app_path=$(echo "${script_dir}/${exe_name}" | sed 's|/|\\|g' | sed 's|\\|\\\\|g')
+
+#         rule_name="Allow Main.exe" # Customize the rule name as needed
+
+# # PowerShell command to add the firewall rule
+#         powershell_command="New-NetFirewallRule -DisplayName '$rule_name' -Direction Inbound -Program '$app_path' -Action Allow -Profile Any"
+
+# # Execute the PowerShell command from Bash
+#         powershell -Command "$powershell_command"
+
+#         echo "Firewall rule added for $app_path"
+# }
+
