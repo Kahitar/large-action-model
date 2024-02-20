@@ -1,0 +1,11 @@
+# Create new token
+
+curl -L -X POST https://api.turso.tech/v1/auth/api-tokens/brazil3 -H "Authorization: Bearer $TURSO_API_TOKEN" | jq .token
+
+# Revoke token
+
+curl -L -X DELETE 'https://api.turso.tech/v1/auth/api-tokens/{tokenName}' -H "Authorization: Bearer $TURSO_API_TOKEN"
+
+# List organization
+
+curl -L https://api.turso.tech/v1/organizations -H "Authorization: Bearer $TURSO_API_TOKEN"

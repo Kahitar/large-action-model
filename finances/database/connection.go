@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -28,16 +27,15 @@ func NewDBParams(dbName string) DBParams {
 }
 
 func CreateDbConnection(params DBParams) *sql.DB {
-    fmt.Printf("%s", params.Url)
     db, err := sql.Open("libsql", params.Url)
     if err != nil {
         log.Fatalf("failed to open db %s: %s\n", params.Url, err)
     }
-    log.Printf("Created db connection to %s\n", params.Url)
+    log.Printf("created db connection")
     return db
 }
 
 func CloseDbConnection(db *sql.DB) {
     db.Close()
-    log.Println("Closed db connection")
+    log.Println("closed db connection")
 }
