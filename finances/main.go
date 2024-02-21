@@ -33,7 +33,7 @@ func startOauthServer() {
 
     // client memory store
     // clientStore := store.NewClientStore()
-    clientStore, err := oauth.NewSQLiteClientStore()
+    clientStore, err := oauth.NewTursoClientStore()
     if err != nil {
         log.Fatal(err)
     }
@@ -64,7 +64,7 @@ func startOauthServer() {
         err := clientStore.Set(clientId, &models.Client{
             ID:     clientId,
             Secret: clientSecret,
-            Domain: "http://localhost:9094",
+            Domain: "http://localhost:9096",
         })
         if err != nil {
             fmt.Println(err.Error())
@@ -75,7 +75,7 @@ func startOauthServer() {
     })
 
     http.HandleFunc("/protected", validateToken(func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Hello, I'm protected"))
+        w.Write([]byte("Hello, I'm protected\n"))
     }, srv))
 
     log.Fatal(http.ListenAndServe(":9096", nil))

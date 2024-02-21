@@ -15,21 +15,21 @@ const (
     OAUTH_CLIENTS_TABLE = "clients"
 )
 
-type SQLiteClientStore struct {
+type TursoClientStore struct {
     db *sql.DB
 }
 
-func NewSQLiteClientStore() (*SQLiteClientStore, error) {
+func NewTursoClientStore() (*TursoClientStore, error) {
     dbInfo, err := getOauthDb()
     if err != nil {
         return nil, err
     }
     dbParams := database.NewDBParams(dbInfo)
     db := database.CreateDbConnection(dbParams)
-    return &SQLiteClientStore{db: db}, nil
+    return &TursoClientStore{db: db}, nil
 }
 
-func (s *SQLiteClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
+func (s *TursoClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
     var client models.Client
     err := s.db.QueryRow("SELECT id, secret, domain FROM clients WHERE id = ?", id).Scan(&client.ID, &client.Secret, &client.Domain)
     if err != nil {
@@ -38,7 +38,7 @@ func (s *SQLiteClientStore) GetByID(id string) (oauth2.ClientInfo, error) {
     return &client, nil
 }
 
-func (s *SQLiteClientStore) Set(id string, client oauth2.ClientInfo) error {
+func (s *TursoClientStore) Set(id string, client oauth2.ClientInfo) error {
     _, err := s.db.Exec("INSERT INTO clients (id, secret, domain) VALUES (?, ?, ?)", id, client.GetSecret(), client.GetDomain())
     return err
 }
