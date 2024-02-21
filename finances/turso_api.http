@@ -9,3 +9,4 @@ curl -L -X DELETE 'https://api.turso.tech/v1/auth/api-tokens/{tokenName}' -H "Au
 # List organization
 
 curl -L https://api.turso.tech/v1/organizations -H "Authorization: Bearer $TURSO_API_TOKEN"
+

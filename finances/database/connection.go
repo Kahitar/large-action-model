@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"log"
-	"os"
 	"strings"
 
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
@@ -17,10 +16,9 @@ type DBParams struct {
     Url string
 }
 
-func NewDBParams(dbName string) DBParams {
-    token := os.Getenv("DB_TOKEN")
-    url := strings.Replace(DB_URL, "[DATABASE]", dbName, 1)
-    url = strings.Replace(url, "[TOKEN]", token, 1)
+func NewDBParams(dbInfo DatabaseInfo) DBParams {
+    url := strings.Replace(DB_URL, "[DATABASE]", dbInfo.Name, 1)
+    url = strings.Replace(url, "[TOKEN]", dbInfo.Token, 1)
     return DBParams{
         Url: url,
     }
