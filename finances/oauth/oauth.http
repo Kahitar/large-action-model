@@ -1,0 +1,11 @@
+# Request client-id and -secret and store in env vars
+
+eval $(curl -s http://localhost:9096/credentials | jq -r '"export CLIENT_ID=\(.CLIENT_ID); export CLIENT_SECRET=\(.CLIENT_SECRET);"')
+
+# Request access token
+
+curl "http://localhost:9096/token?grant_type=client_credentials&client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&scope=all"
+
+# Make request with access token
+
+http://localhost:9096/protected?access_token=$ACCESS_TOKEN
