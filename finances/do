@@ -1,6 +1,7 @@
 ## run (port=9001): Start the project using it's do script
 function task_run() {
-    port=${1:-9001}
+    port=${1:-9002}
+    echo "Running finances on port $port"
     go run main.go --port=$port
 }
 
