@@ -1,8 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"finances/handlers"
+	"finances/oauth"
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/spf13/cobra"
@@ -24,6 +26,10 @@ func runCommand(cmd *cobra.Command, args []string) {
     fmt.Printf("Starting finances server on port %s\n", port)
     mux := http.NewServeMux()
 
+    log.Println("Starting oauth server")
+    oauth.InitializeOauthServer(mux)
+
+    log.Println("Starting finance server")
     mux.HandleFunc("GET /", financeHandler)
 
     if err := http.ListenAndServe("127.0.0.1:" + port, mux); err != nil {

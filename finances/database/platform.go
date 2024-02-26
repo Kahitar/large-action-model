@@ -12,24 +12,22 @@ import (
 	"strings"
 )
 
-type databaseParams struct {
+type platformParams struct {
     platformToken string
     organizationName string
-    databaseName string
     group string
 }
 
-func NewDatabaseParams(databaseName string) databaseParams {
-    return databaseParams{
+func NewPlatformParamsFromEnv() platformParams {
+    return platformParams{
         platformToken: os.Getenv("PLATFORM_TOKEN"),
         organizationName: os.Getenv("ORGANIZATION"),
-        databaseName: databaseName,
         group: os.Getenv("GROUP"),
     }
 }
 
-func DatabaseExists(params databaseParams) bool {
-    requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases/%s", params.organizationName, params.databaseName)
+func DatabaseExists(params platformParams, dbName string) bool {
+    requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases/%s", params.organizationName, dbName)
     req, err := http.NewRequest(http.MethodGet, requestUrl, nil)
     if err != nil {
         log.Printf("error in create retrieve database request: %v\n", err)
@@ -53,33 +51,32 @@ type databaseCreateRequest struct {
     Group string `json:"group"`
 }
 
-func CreateDB(params databaseParams) (DatabaseInfo, error) {
-    if DatabaseExists(params) {
-        return GetDbInfo(params)
+func CreateDB(params platformParams, dbName string) (DatabaseInfo, error) {
+    if DatabaseExists(params, dbName) {
+        return GetDbInfo(params, dbName)
     }
-    if ok := createDB(params); !ok {
+    if ok := createDB(params, dbName); !ok {
         return DatabaseInfo{}, errors.New("failed to create database")
     }
-    return GetDbInfo(params)
+    return GetDbInfo(params, dbName)
 }
 
-func GetDbInfo(params databaseParams) (DatabaseInfo, error) {
+func GetDbInfo(params platformParams, dbName string) (DatabaseInfo, error) {
     groupEnv := fmt.Sprintf("GROUP_TOKEN_%s", strings.ToUpper(params.group))
-    fmt.Printf("group env: %s\n", groupEnv)
     groupToken := os.Getenv(groupEnv)
     if groupToken == "" {
         return DatabaseInfo{}, errors.New("group token not found")
     }
     return DatabaseInfo{
         Token: groupToken,
-        Name: params.databaseName,
+        Name: dbName,
     }, nil
 }
 
-func createDB(params databaseParams) bool {
-    fmt.Printf("Creating database: %s\n", params.databaseName)
+func createDB(params platformParams, dbName string) bool {
+    fmt.Printf("Creating database: %s\n", dbName)
     requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases", params.organizationName)
-    createRequest := databaseCreateRequest{Name: params.databaseName, Group: "default"}
+    createRequest := databaseCreateRequest{Name: dbName, Group: "default"}
     data, err := json.Marshal(createRequest)
     if err != nil {
         log.Printf("error in marschal create database request: %v\n", err)
@@ -118,8 +115,8 @@ func createDB(params databaseParams) bool {
 
 // createDbToken creates a token that is only valid for this one database
 // Deprecated: Not really deprecated, but this function is not tested and for now I use group tokens
-func createDbToken(params databaseParams) string {
-    requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases/%s/auth/tokens", params.organizationName, params.databaseName)
+func createDbToken(params platformParams, dbName string) string {
+    requestUrl := fmt.Sprintf("https://api.turso.tech/v1/organizations/%s/databases/%s/auth/tokens", params.organizationName, dbName)
     req, err := http.NewRequest(http.MethodPost, requestUrl, nil)
     if err != nil {
         log.Printf("error in create token request: %v\n", err)

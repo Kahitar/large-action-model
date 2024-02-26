@@ -44,14 +44,14 @@ func (s *TursoClientStore) Set(id string, client oauth2.ClientInfo) error {
 }
 
 func getOauthDb() (database.DatabaseInfo, error) {
-    databaseParams := database.NewDatabaseParams(OAUTH_CLIENTS_DB)
-    if !database.DatabaseExists(databaseParams) {
-        _, err := database.CreateDB(databaseParams)
+    databaseParams := database.NewPlatformParamsFromEnv()
+    if !database.DatabaseExists(databaseParams, OAUTH_CLIENTS_DB) {
+        _, err := database.CreateDB(databaseParams, OAUTH_CLIENTS_DB)
         if err != nil {
             return database.DatabaseInfo{}, err
         }
     }
-    dbInfo, err := database.GetDbInfo(databaseParams)
+    dbInfo, err := database.GetDbInfo(databaseParams, OAUTH_CLIENTS_DB)
     if err != nil {
         return database.DatabaseInfo{}, err
     }
