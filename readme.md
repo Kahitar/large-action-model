@@ -8,51 +8,16 @@ The hello world action can be executed by asking [Large Action Model](https://ch
 
     "Give me a greeting"
 
-## Database
+## ChatGPT OAuth Flow
 
-We use [turso](https://turso.tech/) as database and [atlas](https://atlasgo.io/) (see 
-[turso blog](https://blog.turso.tech/database-migrations-made-easy-with-atlas-df2b259862db))for migrations.
+ChatGPT does this request to the authorization url:
 
-### Migrations (Atlas)
-
-1. Create a schema file (similar to terraform):
-
-atlas-example.hcl:
-```hcl
-table "users" {
-    schema = schema.main
-
-    column "id" {
-        null = true
-        type = text
-    }
-    column "username" {
-        null = false
-        type = text
-    }
-
-    primary_key {
-        columns = [column.id]
-    }
-}
-schema "main" {
-}
-
-```
-
-2. Create the database and store url and token in an environment variable:
-
-    $ turso db create atlas-example
-    $ turso db show atlas-example --url
-    libsql://atlas-example-glommer.turso.io
-    $ export TURSO_DB_URL=libsql+wss://atlas-example-glommer.turso.io
-    $ export TURSO_DB_TOKEN=$(turso db tokens create atlas-example)
-
-3. Apply the migration
-
-    $ atlas schema apply -u "${TURSO_DB_URL}?authToken=${TURSO_DB_TOKEN}" \
-        --to file://atlas-example.hcl --exclude '_litestream_seq,_litestream_lock'
-
+    https://careful-broadly-kitten.ngrok-free.app/finances/token?
+        response_type=code&
+		client_id=12910ccd&
+		redirect_uri=https%3A%2F%2Fchat.openai.com%2Faip%2Fg-1bc9e788468a358cb5138906b5c6d706d0ecb2cc%2Foauth%2Fcallback&
+		scope=all&
+		state=8288346b-f30b-4aca-bcc8-0c99c5a6cff7
 
 ## Localhost Development
 
@@ -167,3 +132,48 @@ Here is an example spec that works:
 
 This still gives an error `In context=('paths', '/hello', '200', 'response', 'content', 'application/json', 'schema'), object schema missing properties`,
 but it works.
+
+## Database
+
+We use [turso](https://turso.tech/) as database and [atlas](https://atlasgo.io/) (see 
+[turso blog](https://blog.turso.tech/database-migrations-made-easy-with-atlas-df2b259862db))for migrations.
+
+### Migrations (Atlas)
+
+1. Create a schema file (similar to terraform):
+
+atlas-example.hcl:
+```hcl
+table "users" {
+    schema = schema.main
+
+    column "id" {
+        null = true
+        type = text
+    }
+    column "username" {
+        null = false
+        type = text
+    }
+
+    primary_key {
+        columns = [column.id]
+    }
+}
+schema "main" {
+}
+
+```
+
+2. Create the database and store url and token in an environment variable:
+
+    $ turso db create atlas-example
+    $ turso db show atlas-example --url
+    libsql://atlas-example-glommer.turso.io
+    $ export TURSO_DB_URL=libsql+wss://atlas-example-glommer.turso.io
+    $ export TURSO_DB_TOKEN=$(turso db tokens create atlas-example)
+
+3. Apply the migration
+
+    $ atlas schema apply -u "${TURSO_DB_URL}?authToken=${TURSO_DB_TOKEN}" \
+        --to file://atlas-example.hcl --exclude '_litestream_seq,_litestream_lock'

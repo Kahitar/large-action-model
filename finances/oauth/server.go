@@ -49,6 +49,13 @@ func InitializeOauthServer(mux *http.ServeMux) {
         srv.HandleTokenRequest(w, r)
     })
 
+    mux.HandleFunc("GET /authorize", func(w http.ResponseWriter, r *http.Request) {
+		err := srv.HandleAuthorizeRequest(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	})
+
     mux.HandleFunc("GET /credentials", func(w http.ResponseWriter, r *http.Request) {
         clientId := uuid.New().String()[:8]
         clientSecret := uuid.New().String()[:8]
