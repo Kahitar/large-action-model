@@ -28,7 +28,7 @@ func startOauthServer() {
     manager := manage.NewDefaultManager()
     manager.SetAuthorizeCodeTokenCfg(manage.DefaultAuthorizeCodeTokenCfg)
 
-    // token memory store
+    // token memory store - TODO: replace with turso token store
     manager.MustTokenStorage(store.NewMemoryTokenStore())
 
     // client memory store
